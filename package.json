@@ -6,12 +6,15 @@
     "@contentful/app-sdk": "4.29.5",
     "@contentful/f36-components": "4.79.0",
     "@contentful/f36-tokens": "4.2.0",
+    "@contentful/forma-36-tokens": "^0.11.2",
     "@contentful/react-apps-toolkit": "1.2.16",
+    "@emotion/css": "^11.13.5",
     "contentful-management": "11.48.1",
     "emotion": "11.0.0",
     "happy-dom": "^17.4.4",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "uuid": "^11.1.0"
   },
   "scripts": {
     "start": "vite",
