@@ -1,0 +1,36 @@
+{
+  "name": "app-contentful-repeater-v1",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@contentful/app-sdk": "4.29.5",
+    "@contentful/f36-components": "4.79.0",
+    "@contentful/f36-tokens": "4.2.0",
+    "@contentful/react-apps-toolkit": "1.2.16",
+    "contentful-management": "11.48.1",
+    "emotion": "11.0.0",
+    "happy-dom": "^17.4.4",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "scripts": {
+    "start": "vite",
+    "build": "tsc && vite build",
+    "test": "vitest",
+    "create-app-definition": "contentful-app-scripts create-app-definition",
+    "add-locations": "contentful-app-scripts add-locations",
+    "upload": "contentful-app-scripts upload --bundle-dir ./dist",
+    "upload-ci": "contentful-app-scripts upload --ci --bundle-dir ./dist  --organization-id $CONTENTFUL_ORG_ID --definition-id $CONTENTFUL_APP_DEF_ID --token $CONTENTFUL_ACCESS_TOKEN"
+  },
+  "devDependencies": {
+    "@contentful/app-scripts": "^2.3.0",
+    "@testing-library/react": "16.2.0",
+    "@types/node": "22.13.11",
+    "@types/react": "19.0.12",
+    "@types/react-dom": "19.0.4",
+    "@vitejs/plugin-react": "4.3.4",
+    "typescript": "5.8.2",
+    "vite": "6.2.2",
+    "vitest": "3.0.9"
+  }
+}
