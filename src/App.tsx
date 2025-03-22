@@ -1,24 +1,24 @@
-import { FieldAppSDK, init, locations } from '@contentful/app-sdk';
-import { useSDK } from '@contentful/react-apps-toolkit';
-import { useMemo } from 'react';
+import {FieldAppSDK, locations} from '@contentful/app-sdk';
+import {useSDK} from '@contentful/react-apps-toolkit';
+import {useMemo} from 'react';
 import Field from './locations/Field';
 
 const ComponentLocationSettings = {
-  [locations.LOCATION_ENTRY_FIELD]: Field
+    [locations.LOCATION_ENTRY_FIELD]: Field
 };
 
 const App = () => {
-  const sdk = useSDK();
+    const sdk = useSDK();
 
-  const Component = useMemo(() => {
-    for (const [location, component] of Object.entries(ComponentLocationSettings)) {
-      if (sdk.location.is(location)) {
-        return component;
-      }
-    }
-  }, [sdk.location]);
+    const Component = useMemo(() => {
+        for (const [location, component] of Object.entries(ComponentLocationSettings)) {
+            if (sdk.location.is(location)) {
+                return component;
+            }
+        }
+    }, [sdk.location]);
 
-  return Component ? <Field sdk={sdk as FieldAppSDK} /> : null;
+    return Component ? <Field sdk={sdk as FieldAppSDK}/> : null;
 };
 
 export default App;

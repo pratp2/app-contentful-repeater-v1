@@ -1,11 +1,10 @@
-import { FieldAppSDK } from "@contentful/app-sdk";
+import {FieldAppSDK} from "@contentful/app-sdk";
 import tokens from "@contentful/forma-36-tokens";
-import React, { useEffect, useState } from "react";
-import { PlusIcon } from "@contentful/f36-icons";
-import { Flex, IconButton, Tooltip, Button, Table, TableBody, TableRow, TableCell, TextInput } from "@contentful/f36-components";
-import { FormatBoldIcon, FormatItalicIcon } from "@contentful/f36-icons";
-import { css } from "@emotion/css";
-import { v4 as uuid } from "uuid";
+import React, {useEffect, useState} from "react";
+import {DeleteIcon, PlusIcon} from "@contentful/f36-icons";
+import {Button, Flex, Table, TableBody, TableCell, TableRow, TextInput} from "@contentful/f36-components";
+import {css} from "@emotion/css";
+import {v4 as uuid} from "uuid";
 
 interface FieldProps {
     sdk: FieldAppSDK;
@@ -26,14 +25,32 @@ function createItem(): Item {
 }
 
 const styles = {
-    editorToolbarContainer: css({
-        backgroundColor: tokens.gray200,
-        borderRadius: "6px 6px 0 0;",
+    table: css({
+        width: "100%",
+        borderCollapse: "collapse",
+        marginBottom: tokens.spacingM,
+    }),
+    tableHeader: css({
+        backgroundColor: tokens.gray100,
+        fontWeight: tokens.fontWeightDemiBold,
+    }),
+    tableCell: css({
+        padding: tokens.spacingM,
+        borderBottom: `1px solid ${tokens.gray300}`,
+    }),
+    input: css({
+        width: "100%",
+    }),
+    deleteButton: css({
+        marginLeft: tokens.spacingM,
+    }),
+    addButton: css({
+        marginTop: tokens.spacingM,
     }),
 };
 
 const Field = (props: FieldProps) => {
-    const { valueName = "Value" } = props.sdk.parameters.instance as any;
+    const {valueName = "Value"} = props.sdk.parameters.instance as any;
     const [items, setItems] = useState<Item[]>([]);
 
     useEffect(() => {
@@ -67,7 +84,7 @@ const Field = (props: FieldProps) => {
         (item: Item, property: "key" | "value") =>
             (e: React.ChangeEvent<HTMLInputElement>) => {
                 const updatedItems = items.map((i) =>
-                    i.id === item.id ? { ...i, [property]: e.target.value } : i
+                    i.id === item.id ? {...i, [property]: e.target.value} : i
                 );
                 setItems(updatedItems); // Update local state
                 props.sdk.field.setValue(updatedItems); // Update Contentful field value
@@ -81,67 +98,40 @@ const Field = (props: FieldProps) => {
 
     return (
         <div>
-            <Table>
+            <Table className={styles.table}>
                 <TableBody>
                     {items.map((item) => (
                         <TableRow key={item.id}>
-                            <TableCell>
+                            <TableCell className={styles.tableCell}>
                                 <TextInput
                                     id="key"
                                     name="key"
                                     placeholder="Item Name"
                                     value={item.key}
                                     onChange={createOnChangeHandler(item, "key")}
+                                    className={styles.input}
                                 />
                             </TableCell>
-                            <TableCell>
+                            <TableCell className={styles.tableCell}>
                                 <TextInput
                                     id="value"
                                     name="value"
                                     placeholder={valueName}
                                     value={item.value}
                                     onChange={createOnChangeHandler(item, "value")}
+                                    className={styles.input}
                                 />
                             </TableCell>
-                            <TableCell align="right">
-                                <Flex
-                                    justifyContent="space-between"
-                                    className={styles.editorToolbarContainer}
-                                    padding="spacingXs"
-                                >
-                                    <Flex
-                                        flexDirection="row"
-                                        justifyContent="center"
-                                        alignItems="center"
+                            <TableCell className={styles.tableCell} align="right">
+                                <Flex justifyContent="flex-end">
+                                    <Button
+                                        variant="negative" // Red button
+                                        startIcon={<DeleteIcon/>}
+                                        onClick={() => deleteItem(item)}
+                                        className={styles.deleteButton}
                                     >
-                                        <Tooltip
-                                            placement="right"
-                                            id="tip1"
-                                            targetWrapperClassName="targetWrapperClassName"
-                                            content="Bold"
-                                        >
-                                            <IconButton
-                                                icon={<FormatBoldIcon size="small" />}
-                                                variant="transparent"
-                                                size="small"
-                                                aria-label="Bold"
-                                            />
-                                        </Tooltip>
-                                        <Tooltip
-                                            placement="right"
-                                            id="tip2"
-                                            targetWrapperClassName="targetWrapperClassName"
-                                            content="Italic"
-                                        >
-                                            <IconButton
-                                                icon={<FormatItalicIcon size="small" />}
-                                                variant="transparent"
-                                                size="small"
-                                                aria-label="Italic"
-                                            />
-                                        </Tooltip>
-                                    </Flex>
-                                    <Button onClick={() => deleteItem(item)}>Delete</Button>
+                                        Delete
+                                    </Button>
                                 </Flex>
                             </TableCell>
                         </TableRow>
@@ -149,10 +139,10 @@ const Field = (props: FieldProps) => {
                 </TableBody>
             </Table>
             <Button
-                variant="primary"
-                startIcon={<PlusIcon />}
+                variant="primary" // Blue button
+                startIcon={<PlusIcon/>}
                 onClick={addNewItem}
-                style={{ marginTop: tokens.spacingS }}
+                className={styles.addButton}
             >
                 Add Item
             </Button>
