@@ -26,13 +26,13 @@
     "upload-ci": "contentful-app-scripts upload --ci --bundle-dir ./dist  --organization-id $CONTENTFUL_ORG_ID --definition-id $CONTENTFUL_APP_DEF_ID --token $CONTENTFUL_ACCESS_TOKEN"
   },
   "devDependencies": {
-    "@contentful/app-scripts": "^2.5.0",
+    "@contentful/app-scripts": "^2.5.1",
     "@testing-library/react": "16.3.0",
     "@types/node": "22.14.0",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
     "@vitejs/plugin-react": "4.3.4",
-    "typescript": "5.8.2",
+    "typescript": "5.8.3",
     "vite": "6.2.5",
     "vitest": "3.1.1"
   }
