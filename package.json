@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@contentful/app-sdk": "4.29.5",
+    "@contentful/app-sdk": "4.29.6",
     "@contentful/f36-components": "4.79.1",
     "@contentful/f36-tokens": "4.2.0",
     "@contentful/forma-36-tokens": "^0.11.2",
     "@contentful/react-apps-toolkit": "1.2.16",
     "@emotion/css": "^11.13.5",
-    "contentful-management": "11.52.0",
+    "contentful-management": "11.52.1",
     "emotion": "11.0.0",
     "happy-dom": "^17.4.4",
     "react": "19.1.0",
@@ -28,12 +28,12 @@
   "devDependencies": {
     "@contentful/app-scripts": "^2.5.1",
     "@testing-library/react": "16.3.0",
-    "@types/node": "22.14.0",
-    "@types/react": "19.1.0",
-    "@types/react-dom": "19.1.1",
+    "@types/node": "22.14.1",
+    "@types/react": "19.1.1",
+    "@types/react-dom": "19.1.2",
     "@vitejs/plugin-react": "4.3.4",
     "typescript": "5.8.3",
-    "vite": "6.2.5",
+    "vite": "6.2.6",
     "vitest": "3.1.1"
   }
 }
