@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@contentful/app-sdk": "4.29.6",
-    "@contentful/f36-components": "4.80.3",
+    "@contentful/app-sdk": "4.29.7",
+    "@contentful/f36-components": "4.80.4",
     "@contentful/f36-tokens": "4.2.0",
     "@contentful/forma-36-tokens": "^0.11.2",
     "@contentful/react-apps-toolkit": "1.2.16",
@@ -28,7 +28,7 @@
   "devDependencies": {
     "@contentful/app-scripts": "^2.5.1",
     "@testing-library/react": "16.3.0",
-    "@types/node": "22.15.23",
+    "@types/node": "22.15.29",
     "@types/react": "19.1.6",
     "@types/react-dom": "19.1.5",
     "@vitejs/plugin-react": "4.5.0",
