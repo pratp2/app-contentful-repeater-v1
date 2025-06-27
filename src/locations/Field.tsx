@@ -1,4 +1,4 @@
-import {FieldAppSDK} from "@contentful/app-sdk";
+ import {FieldAppSDK} from "@contentful/app-sdk";
 import tokens from "@contentful/forma-36-tokens";
 import React, {useEffect, useState} from "react";
 import {DeleteIcon, PlusIcon} from "@contentful/f36-icons";
