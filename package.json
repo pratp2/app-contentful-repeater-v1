@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@contentful/app-sdk": "4.29.7",
+    "@contentful/app-sdk": "4.31.0",
     "@contentful/f36-components": "4.80.5",
     "@contentful/f36-tokens": "4.2.0",
     "@contentful/forma-36-tokens": "^0.11.2",
@@ -28,12 +28,12 @@
   "devDependencies": {
     "@contentful/app-scripts": "^2.5.5",
     "@testing-library/react": "16.3.0",
-    "@types/node": "24.0.12",
+    "@types/node": "24.0.14",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
     "@vitejs/plugin-react": "4.6.0",
     "typescript": "5.8.3",
-    "vite": "7.0.3",
+    "vite": "7.0.4",
     "vitest": "3.2.4"
   }
 }
