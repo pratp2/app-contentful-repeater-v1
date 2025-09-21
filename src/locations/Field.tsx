@@ -1,7 +1,7 @@
- import {FieldAppSDK} from "@contentful/app-sdk";
+import {FieldAppSDK} from "@contentful/app-sdk";
 import tokens from "@contentful/forma-36-tokens";
 import React, {useEffect, useState} from "react";
-import {DeleteIcon, PlusIcon} from "@contentful/f36-icons";
+import {XIcon , PlusIcon} from "@contentful/f36-icons";
 import {Button, Flex, Table, TableBody, TableCell, TableRow, TextInput} from "@contentful/f36-components";
 import {css} from "@emotion/css";
 import {v4 as uuid} from "uuid";
@@ -126,7 +126,7 @@ const Field = (props: FieldProps) => {
                                 <Flex justifyContent="flex-end">
                                     <Button
                                         variant="negative" // Red button
-                                        startIcon={<DeleteIcon/>}
+                                        startIcon={<XIcon />}
                                         onClick={() => deleteItem(item)}
                                         className={styles.deleteButton}
                                     >
