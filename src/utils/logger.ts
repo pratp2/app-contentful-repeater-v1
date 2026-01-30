@@ -26,7 +26,7 @@ const logger = pino({
  */
 export const logInfo = (
   message: string,
-  metadata: Record<string, any> = {},
+  metadata: Record<string, unknown> = {},
 ): void => {
   logger.info(metadata, message);
 };
@@ -39,7 +39,7 @@ export const logInfo = (
  */
 export const logDebug = (
   message: string,
-  metadata: Record<string, any> = {},
+  metadata: Record<string, unknown> = {},
 ): void => {
   logger.debug(metadata, message);
 };
@@ -52,7 +52,7 @@ export const logDebug = (
  */
 export const logWarn = (
   message: string,
-  metadata: Record<string, any> = {},
+  metadata: Record<string, unknown> = {},
 ): void => {
   logger.warn(metadata, message);
 };
@@ -67,7 +67,7 @@ export const logWarn = (
  */
 export const logError = (
   message: string,
-  errorOrMetadata: Error | Record<string, any> = {},
+  errorOrMetadata: Error | Record<string, unknown> = {},
 ): void => {
   if (errorOrMetadata instanceof Error) {
     logger.error(

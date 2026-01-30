@@ -21,17 +21,31 @@ import { logDebug, logInfo } from "../utils/logger";
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Props passed to the Field component by the Contentful App SDK.
+ */
 interface FieldProps {
+  /** The SDK instance provided by Contentful. */
   sdk: FieldAppSDK;
 }
 
+/**
+ * Represents a single row in the repeater field.
+ */
 interface Item {
+  /** Unique identifier for the item (UUID). */
   id: string;
+  /** The key or name of the item. */
   key: string;
+  /** The value associated with the item. */
   value: string;
 }
 
+/**
+ * Configuration parameters defined in the Contentful App definition.
+ */
 interface InstanceParameters {
+  /** Custom label for the "Value" column header. Defaults to "Value". */
   valueName?: string;
 }
 
@@ -39,6 +53,11 @@ interface InstanceParameters {
 /*                                   Helpers                                  */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Generates a new empty item with a unique ID.
+ *
+ * @returns {Item} A new item object with empty key/value and a generated UUID.
+ */
 const createItem = (): Item => ({
   id: uuid(),
   key: "",
@@ -49,6 +68,9 @@ const createItem = (): Item => ({
 /*                                    Styles                                  */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * CSS styles for the component using Emotion.
+ */
 const styles = {
   /* border-spacing: horizontal gap between columns, vertical gap between rows (reduced) */
   table: css({
@@ -113,9 +135,17 @@ const styles = {
 /*                                 Component                                  */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * The main Repeater Field component.
+ *
+ * This component renders a table of key-value pairs that can be added, edited, and deleted.
+ * It synchronizes the state with the Contentful Field API and handles auto-resizing.
+ *
+ * @param {FieldProps} props - The component props containing the Contentful SDK.
+ * @returns {JSX.Element} The rendered Repeater Field component.
+ */
 const Field: React.FC<FieldProps> = ({ sdk }) => {
-  const { valueName = "Value" } =
-    sdk.parameters.instance as InstanceParameters;
+  const { valueName = "Value" } = sdk.parameters.instance as InstanceParameters;
 
   const [items, setItems] = useState<Item[]>([]);
 
@@ -154,6 +184,11 @@ const Field: React.FC<FieldProps> = ({ sdk }) => {
 
   /* ----------------------------- Event Handlers ---------------------------- */
 
+  /**
+   * Updates the local state and the Contentful field value.
+   *
+   * @param {Item[]} updatedItems - The new list of items to save.
+   */
   const updateFieldValue = useCallback(
     (updatedItems: Item[]) => {
       setItems(updatedItems);
@@ -162,25 +197,38 @@ const Field: React.FC<FieldProps> = ({ sdk }) => {
     [sdk.field],
   );
 
+  /**
+   * Adds a new empty item to the repeater list.
+   */
   const handleAddItem = useCallback(() => {
     const updatedItems = [...items, createItem()];
     logInfo("Item added", { totalItems: updatedItems.length });
     updateFieldValue(updatedItems);
   }, [items, updateFieldValue]);
 
+  /**
+   * Creates a change handler for a specific item and property.
+   *
+   * @param {string} itemId - The unique ID of the item to update.
+   * @param {keyof Omit<Item, "id">} property - The property ("key" or "value") to update.
+   * @returns {React.ChangeEventHandler<HTMLInputElement>} The event handler function.
+   */
   const handleChange =
     (itemId: string, property: keyof Omit<Item, "id">) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const updatedItems = items.map((item) =>
-        item.id === itemId
-          ? { ...item, [property]: event.target.value }
-          : item,
+        item.id === itemId ? { ...item, [property]: event.target.value } : item,
       );
 
       logDebug("Item updated", { itemId, property });
       updateFieldValue(updatedItems);
     };
 
+  /**
+   * Deletes an item from the repeater list by its ID.
+   *
+   * @param {string} itemId - The unique ID of the item to delete.
+   */
   const handleDelete = useCallback(
     (itemId: string) => {
       const updatedItems = items.filter((item) => item.id !== itemId);
@@ -202,10 +250,7 @@ const Field: React.FC<FieldProps> = ({ sdk }) => {
           <TableRow>
             <TableCell className={styles.headerCell}>Item Name</TableCell>
             <TableCell className={styles.headerCell}>{valueName}</TableCell>
-            <TableCell
-              className={styles.headerCell}
-              align="right"
-            >
+            <TableCell className={styles.headerCell} align="right">
               Actions
             </TableCell>
           </TableRow>
@@ -246,7 +291,10 @@ const Field: React.FC<FieldProps> = ({ sdk }) => {
                   className={`${styles.cellWrapper} ${styles.cellWrapperActions}`}
                 >
                   <Flex justifyContent="flex-end" gap="spacingM">
-                    <span className={styles.spacerBeforeDelete} aria-hidden="true" />
+                    <span
+                      className={styles.spacerBeforeDelete}
+                      aria-hidden="true"
+                    />
                     <Button
                       variant="negative"
                       startIcon={<XIcon />}

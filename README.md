@@ -1,24 +1,24 @@
 # Contentful Repeater App (v1)
 
 ![Contentful App](https://img.shields.io/badge/Contentful-App-blue?style=for-the-badge&logo=contentful)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)
-![Vite](https://img.shields.io/badge/Vite-4.0-646CFF?style=for-the-badge&logo=vite)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-A professional, custom Contentful App that introduces a **Repeater Field** capability to your content model. 
+A professional, custom Contentful App that introduces a **Repeater Field** capability to your content model.
 
-This app allows editors to create, manage, and reorder lists of key-value pairs directly within the Contentful entry editor. It seamlessly integrates with the Contentful implementation using the Forma 36 design system to ensure a native look and feel.
+This app empowers editors to create, manage, and reorder lists of key-value pairs directly within the Contentful entry editor. It seamlessly integrates with the Contentful ecosystem using the Forma 36 design system, ensuring a native and intuitive user experience.
 
 ---
 
 ## 🚀 Features
 
-- **Dynamic Key-Value Management**: Add, edit, and delete items in a repeater list effortlessly.
-- **Native Experience**: Built with `@contentful/f36-components` to match the Contentful UI perfectly.
-- **Auto-Resizing**: The app automatically adjusts its height within the entry editor for a smooth user experience.
+- **Dynamic Key-Value Management**: Effortlessly add, edit, and delete items in a repeater list.
+- **Native Experience**: Built with `@contentful/f36-components` to perfectly match the Contentful UI.
+- **Auto-Resizing**: The app automatically adjusts its height within the entry editor for a seamless workflow.
 - **Customizable Labels**: Configure the label for the "Value" field via instance parameters (e.g., change "Value" to "URL" or "Description").
-- **Robust Validation**: Ensures data integrity with clean state management.
+- **Robust Validation**: Ensures data integrity with clean state management and type safety.
 - **Professional Logging**: Integrated structured logging for easier debugging and monitoring.
 
 ## 🛠 Tech Stack
@@ -60,7 +60,7 @@ Start the development server:
 npm start
 ```
 
-The app will be available at `http://localhost:3000`. 
+The app will be available at `http://localhost:3000`.
 
 > **Note**: Because Contentful Apps run inside an iframe within the Contentful web app, opening `http://localhost:3000` directly in your browser will show a warning message. This is expected behavior.
 
@@ -140,22 +140,25 @@ To deploy this app to production, you can host the static build on Vercel, Netli
 
 3. Update your **Contentful App Definition** to point to the new production URL instead of `localhost`.
 
-Alternatively, use the Contentful CLI to host:
+Alternatively, use the Contentful app scripts to upload the bundle:
 ```bash
-npm run upload
+npm run contentful:upload
 ```
+
+---
+
+## 📚 Documentation
+
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — Branch naming, commit style, and how to open a Pull Request.
+- **[CHANGELOG.md](CHANGELOG.md)** — Version history and notable changes.
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — High-level design and technical decisions.
+- **API docs** — JSDoc/TSDoc in source provide editor hints. Generate static API docs with `npm run docs:api` (output in `docs/api/`).
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push -u origin feature/AmazingFeature`)
-5. Open a Pull Request
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for branch naming, commit style, and PR steps before submitting a Pull Request.
 
 ## 👤 Author
 

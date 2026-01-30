@@ -15,5 +15,12 @@ export default defineConfig(() => ({
   plugins: [react()],
   test: {
     environment: 'happy-dom',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: ['src/**/*.test.{ts,tsx}', 'src/vite-env.d.ts'],
+      reportsDirectory: './coverage',
+    },
   },
 }));

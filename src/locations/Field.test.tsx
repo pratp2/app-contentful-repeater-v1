@@ -1,30 +1,10 @@
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import Field from "./Field";
-import { FieldAppSDK } from "@contentful/app-sdk";
+import { createMockFieldSdk } from "../../test/mocks/mockFieldSdk";
 
-// Mock the dependencies
-/**
- * Mock implementation of the Contentful Field App SDK.
- * Used to simulate the SDK environment and verify interactions with the field and window API.
- *
- * @type {FieldAppSDK}
- */
-const mockSdk = {
-  field: {
-    getValue: vi.fn(),
-    setValue: vi.fn(),
-    onValueChanged: vi.fn(),
-  },
-  window: {
-    startAutoResizer: vi.fn(),
-  },
-  parameters: {
-    instance: {
-      valueName: "Test Value",
-    },
-  },
-} as unknown as FieldAppSDK;
+// Use shared Field SDK mock factory to keep tests consistent and avoid duplication
+let mockSdk = createMockFieldSdk();
 
 /**
  * Test suite for the Field component.
@@ -34,6 +14,8 @@ const mockSdk = {
 describe("Field Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Recreate a fresh SDK mock for each test to avoid cross-test state
+    mockSdk = createMockFieldSdk();
   });
 
   afterEach(() => {
@@ -51,7 +33,9 @@ describe("Field Component", () => {
     render(<Field sdk={mockSdk} />);
 
     expect(mockSdk.window.startAutoResizer).toHaveBeenCalled();
-    expect(screen.getByRole("button", { name: "Add new item to repeater" })).toBeDefined();
+    expect(
+      screen.getByRole("button", { name: "Add new item to repeater" }),
+    ).toBeDefined();
   });
 
   /**
@@ -118,7 +102,9 @@ describe("Field Component", () => {
 
     render(<Field sdk={mockSdk} />);
 
-    const addButton = screen.getByRole("button", { name: "Add new item to repeater" });
+    const addButton = screen.getByRole("button", {
+      name: "Add new item to repeater",
+    });
     fireEvent.click(addButton);
 
     // Should call setValue with an array of 1 item
@@ -145,10 +131,12 @@ describe("Field Component", () => {
     // Since we mocked onValueChanged to NOT fire automatically in this test unless we do it manually,
     // let's create a specialized mock for this test or use a slightly different approach.
     // The easiest is to make the mockSdk.field.onValueChanged call the callback immediately.
-    (mockSdk.field.onValueChanged as any).mockImplementation((cb: Function) => {
-      cb(initialItems);
-      return vi.fn();
-    });
+    (mockSdk.field.onValueChanged as any).mockImplementation(
+      (cb: (value: any) => void) => {
+        cb(initialItems);
+        return vi.fn();
+      },
+    );
 
     render(<Field sdk={mockSdk} />);
 
@@ -169,14 +157,18 @@ describe("Field Component", () => {
   it("deletes an item", () => {
     const initialItems = [{ id: "1", key: "k1", value: "v1" }];
     (mockSdk.field.getValue as any).mockReturnValue(initialItems);
-    (mockSdk.field.onValueChanged as any).mockImplementation((cb: Function) => {
-      cb(initialItems);
-      return vi.fn();
-    });
+    (mockSdk.field.onValueChanged as any).mockImplementation(
+      (cb: (value: any) => void) => {
+        cb(initialItems);
+        return vi.fn();
+      },
+    );
 
     render(<Field sdk={mockSdk} />);
 
-    const deleteButton = screen.getByRole("button", { name: "Delete item, row 1" });
+    const deleteButton = screen.getByRole("button", {
+      name: "Delete item, row 1",
+    });
     fireEvent.click(deleteButton);
 
     expect(mockSdk.field.setValue).toHaveBeenCalledWith([]);

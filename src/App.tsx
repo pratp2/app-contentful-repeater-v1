@@ -9,7 +9,10 @@ import Field from "./locations/Field";
  * Keys are location identifiers from the Contentful SDK and values are the
  * components that should be mounted when the app is rendered in that location.
  */
-const ComponentLocationSettings: Record<string, React.ComponentType<any>> = {
+const ComponentLocationSettings: Record<
+  string,
+  React.ComponentType<{ sdk: FieldAppSDK }>
+> = {
   [locations.LOCATION_ENTRY_FIELD]: Field,
 };
 
