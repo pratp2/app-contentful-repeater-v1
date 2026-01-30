@@ -1,0 +1,7 @@
+{
+  "extends": "recommended",
+  "tagNamePreference": {
+    "remarks": "remarks",
+    "example": "example"
+  }
+}

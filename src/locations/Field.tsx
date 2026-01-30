@@ -1,153 +1,280 @@
-import {FieldAppSDK} from "@contentful/app-sdk";
+import React, { useCallback, useEffect, useState } from "react";
+import { FieldAppSDK } from "@contentful/app-sdk";
+import {
+  Button,
+  Flex,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextInput,
+} from "@contentful/f36-components";
+import { PlusIcon, XIcon } from "@contentful/f36-icons";
 import tokens from "@contentful/forma-36-tokens";
-import React, {useEffect, useState} from "react";
-import {PlusIcon, XIcon} from "@contentful/f36-icons";
-import {Button, Flex, Table, TableBody, TableCell, TableRow, TextInput} from "@contentful/f36-components";
-import {css} from "@emotion/css";
-import {v4 as uuid} from "uuid";
+import { css } from "@emotion/css";
+import { v4 as uuid } from "uuid";
+
+import { logDebug, logInfo } from "../utils/logger";
+
+/* -------------------------------------------------------------------------- */
+/*                                    Types                                   */
+/* -------------------------------------------------------------------------- */
 
 interface FieldProps {
-    sdk: FieldAppSDK;
+  sdk: FieldAppSDK;
 }
 
 interface Item {
-    id: string;
-    key: string;
-    value: string;
+  id: string;
+  key: string;
+  value: string;
 }
 
-function createItem(): Item {
-    return {
-        id: uuid(),
-        key: "",
-        value: "",
-    };
+interface InstanceParameters {
+  valueName?: string;
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                   Helpers                                  */
+/* -------------------------------------------------------------------------- */
+
+const createItem = (): Item => ({
+  id: uuid(),
+  key: "",
+  value: "",
+});
+
+/* -------------------------------------------------------------------------- */
+/*                                    Styles                                  */
+/* -------------------------------------------------------------------------- */
 
 const styles = {
-    table: css({
-        width: "100%",
-        borderCollapse: "collapse",
-        marginBottom: tokens.spacingM,
-    }),
-    tableHeader: css({
-        backgroundColor: tokens.gray100,
-        fontWeight: tokens.fontWeightDemiBold,
-    }),
-    tableCell: css({
-        padding: tokens.spacingM,
-        borderBottom: `1px solid ${tokens.gray300}`,
-    }),
-    input: css({
-        width: "100%",
-    }),
-    deleteButton: css({
-        marginLeft: tokens.spacingM,
-    }),
-    addButton: css({
-        marginTop: tokens.spacingM,
-    }),
+  /* border-spacing: horizontal gap between columns, vertical gap between rows (reduced) */
+  table: css({
+    width: "100%",
+    borderCollapse: "separate",
+    borderSpacing: `${tokens.spacingM} ${tokens.spacingM}`,
+    marginBottom: tokens.spacingL,
+    "& td, & th": {
+      verticalAlign: "middle",
+      borderBottom: "none",
+    },
+    "& tbody td": {
+      borderBottom: `1px solid ${tokens.gray300}`,
+    },
+    "& thead th": {
+      borderBottom: `2px solid ${tokens.gray300}`,
+    },
+  }),
+  headerCell: css({
+    padding: `${tokens.spacingS} ${tokens.spacingM}`,
+    fontWeight: 600,
+    color: tokens.gray700,
+  }),
+  /* Wrapper divs guarantee visible spacing (not overridden by F36); reduced vertical padding */
+  cellWrapper: css({
+    padding: `${tokens.spacingM} ${tokens.spacingM}`,
+    minHeight: "44px",
+    boxSizing: "border-box",
+  }),
+  cellWrapperItemName: css({
+    paddingRight: tokens.spacingL,
+    minWidth: "140px",
+  }),
+  cellWrapperValue: css({
+    paddingLeft: tokens.spacingL,
+    paddingRight: tokens.spacingXl,
+    minWidth: "140px",
+  }),
+  cellWrapperActions: css({
+    paddingLeft: tokens.spacing2Xl,
+    minWidth: "120px",
+    whiteSpace: "nowrap",
+  }),
+  /* Explicit spacer so Delete button never touches Value column */
+  spacerBeforeDelete: css({
+    width: tokens.spacingXl,
+    minWidth: tokens.spacingXl,
+    flexShrink: 0,
+  }),
+  input: css({
+    width: "100%",
+  }),
+  deleteButton: css({
+    marginLeft: tokens.spacingXl,
+  }),
+  addButton: css({
+    marginTop: tokens.spacingL,
+  }),
 };
 
-const Field = (props: FieldProps) => {
-    const {valueName = "Value"} = props.sdk.parameters.instance as any;
-    const [items, setItems] = useState<Item[]>([]);
+/* -------------------------------------------------------------------------- */
+/*                                 Component                                  */
+/* -------------------------------------------------------------------------- */
 
-    useEffect(() => {
-        props.sdk.window.startAutoResizer();
+const Field: React.FC<FieldProps> = ({ sdk }) => {
+  const { valueName = "Value" } =
+    sdk.parameters.instance as InstanceParameters;
 
-        // Initialize the field value if it's empty
-        if (!props.sdk.field.getValue()) {
-            props.sdk.field.setValue([]);
-        }
+  const [items, setItems] = useState<Item[]>([]);
 
-        // Listen for changes to the field value
-        const detachValueChangeHandler = props.sdk.field.onValueChanged((value: Item[]) => {
-            if (Array.isArray(value)) {
-                setItems(value);
-            }
+  /* ---------------------------- Initialization ---------------------------- */
+
+  useEffect(() => {
+    sdk.window.startAutoResizer();
+    logInfo("Repeater field mounted");
+
+    const initialValue = sdk.field.getValue() as Item[] | undefined;
+
+    if (Array.isArray(initialValue)) {
+      setItems(initialValue);
+      logDebug("Loaded existing field value", {
+        itemCount: initialValue.length,
+      });
+    } else {
+      sdk.field.setValue([]);
+      logDebug("Initialized empty field value");
+    }
+
+    const detach = sdk.field.onValueChanged((value) => {
+      if (Array.isArray(value)) {
+        setItems(value);
+        logDebug("External field update detected", {
+          itemCount: value.length,
         });
+      }
+    });
 
-        // Cleanup the listener on unmount
-        return () => {
-            detachValueChangeHandler();
-        };
-    }, [props.sdk.field]);
+    return () => {
+      detach();
+      logInfo("Repeater field unmounted");
+    };
+  }, [sdk]);
 
-    const addNewItem = () => {
-        const newItem = createItem();
-        const updatedItems = [...items, newItem];
-        props.sdk.field.setValue(updatedItems);
+  /* ----------------------------- Event Handlers ---------------------------- */
+
+  const updateFieldValue = useCallback(
+    (updatedItems: Item[]) => {
+      setItems(updatedItems);
+      sdk.field.setValue(updatedItems);
+    },
+    [sdk.field],
+  );
+
+  const handleAddItem = useCallback(() => {
+    const updatedItems = [...items, createItem()];
+    logInfo("Item added", { totalItems: updatedItems.length });
+    updateFieldValue(updatedItems);
+  }, [items, updateFieldValue]);
+
+  const handleChange =
+    (itemId: string, property: keyof Omit<Item, "id">) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const updatedItems = items.map((item) =>
+        item.id === itemId
+          ? { ...item, [property]: event.target.value }
+          : item,
+      );
+
+      logDebug("Item updated", { itemId, property });
+      updateFieldValue(updatedItems);
     };
 
-    const createOnChangeHandler =
-        (item: Item, property: "key" | "value") =>
-            (e: React.ChangeEvent<HTMLInputElement>) => {
-                const updatedItems = items.map((i) =>
-                    i.id === item.id ? {...i, [property]: e.target.value} : i
-                );
-                setItems(updatedItems); // Update local state
-                props.sdk.field.setValue(updatedItems); // Update Contentful field value
-            };
+  const handleDelete = useCallback(
+    (itemId: string) => {
+      const updatedItems = items.filter((item) => item.id !== itemId);
+      logInfo("Item deleted", { remainingItems: updatedItems.length });
+      updateFieldValue(updatedItems);
+    },
+    [items, updateFieldValue],
+  );
 
-    const deleteItem = (item: Item) => {
-        const updatedItems = items.filter((i) => i.id !== item.id);
-        setItems(updatedItems); // Update local state
-        props.sdk.field.setValue(updatedItems); // Update Contentful field value
-    };
+  /* ---------------------------------- UI ---------------------------------- */
 
-    return (
-        <div>
-            <Table className={styles.table}>
-                <TableBody>
-                    {items.map((item) => (
-                        <TableRow key={item.id}>
-                            <TableCell className={styles.tableCell}>
-                                <TextInput
-                                    id="key"
-                                    name="key"
-                                    placeholder="Item Name"
-                                    value={item.key}
-                                    onChange={createOnChangeHandler(item, "key")}
-                                    className={styles.input}
-                                />
-                            </TableCell>
-                            <TableCell className={styles.tableCell}>
-                                <TextInput
-                                    id="value"
-                                    name="value"
-                                    placeholder={valueName}
-                                    value={item.value}
-                                    onChange={createOnChangeHandler(item, "value")}
-                                    className={styles.input}
-                                />
-                            </TableCell>
-                            <TableCell className={styles.tableCell} align="right">
-                                <Flex justifyContent="flex-end">
-                                    <Button
-                                        variant="negative" // Red button
-                                        startIcon={<XIcon/>}
-                                        onClick={() => deleteItem(item)}
-                                        className={styles.deleteButton}
-                                    >
-                                        Delete
-                                    </Button>
-                                </Flex>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            <Button
-                variant="primary" // Blue button
-                startIcon={<PlusIcon/>}
-                onClick={addNewItem}
-                className={styles.addButton}
+  return (
+    <>
+      <Table
+        className={styles.table}
+        aria-label="Repeater items: key-value pairs"
+      >
+        <TableHead>
+          <TableRow>
+            <TableCell className={styles.headerCell}>Item Name</TableCell>
+            <TableCell className={styles.headerCell}>{valueName}</TableCell>
+            <TableCell
+              className={styles.headerCell}
+              align="right"
             >
-                Add Item
-            </Button>
-        </div>
-    );
+              Actions
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {items.map((item, index) => (
+            <TableRow key={item.id}>
+              <TableCell>
+                <div
+                  className={`${styles.cellWrapper} ${styles.cellWrapperItemName}`}
+                >
+                  <TextInput
+                    placeholder="Item Name"
+                    value={item.key}
+                    onChange={handleChange(item.id, "key")}
+                    className={styles.input}
+                    aria-label={`Item name, row ${index + 1}`}
+                  />
+                </div>
+              </TableCell>
+
+              <TableCell>
+                <div
+                  className={`${styles.cellWrapper} ${styles.cellWrapperValue}`}
+                >
+                  <TextInput
+                    placeholder={valueName}
+                    value={item.value}
+                    onChange={handleChange(item.id, "value")}
+                    className={styles.input}
+                    aria-label={`${valueName}, row ${index + 1}`}
+                  />
+                </div>
+              </TableCell>
+
+              <TableCell align="right">
+                <div
+                  className={`${styles.cellWrapper} ${styles.cellWrapperActions}`}
+                >
+                  <Flex justifyContent="flex-end" gap="spacingM">
+                    <span className={styles.spacerBeforeDelete} aria-hidden="true" />
+                    <Button
+                      variant="negative"
+                      startIcon={<XIcon />}
+                      onClick={() => handleDelete(item.id)}
+                      className={styles.deleteButton}
+                      aria-label={`Delete item, row ${index + 1}`}
+                    >
+                      Delete
+                    </Button>
+                  </Flex>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <Button
+        variant="primary"
+        startIcon={<PlusIcon />}
+        onClick={handleAddItem}
+        className={styles.addButton}
+        aria-label="Add new item to repeater"
+      >
+        Add Item
+      </Button>
+    </>
+  );
 };
 
 export default Field;
