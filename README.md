@@ -6,53 +6,54 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-A professional, custom Contentful App that introduces a **Repeater Field** capability to your content model.
+<!-- Featured screenshot -->
+![Repeater UI](./Repeater_v2.JPG)
 
-This app empowers editors to create, manage, and reorder lists of key-value pairs directly within the Contentful entry editor. It seamlessly integrates with the Contentful ecosystem using the Forma 36 design system, ensuring a native and intuitive user experience.
-
----
-
-## 🚀 Features
-
-- **Dynamic Key-Value Management**: Effortlessly add, edit, and delete items in a repeater list.
-- **Native Experience**: Built with `@contentful/f36-components` to perfectly match the Contentful UI.
-- **Auto-Resizing**: The app automatically adjusts its height within the entry editor for a seamless workflow.
-- **Customizable Labels**: Configure the label for the "Value" field via instance parameters (e.g., change "Value" to "URL" or "Description").
-- **Robust Validation**: Ensures data integrity with clean state management and type safety.
-- **Professional Logging**: Integrated structured logging for easier debugging and monitoring.
-
-## 🛠 Tech Stack
-
-- **Framework**: [React](https://reactjs.org/) with [TypeScript](https://www.typescriptlang.org/)
-- **Build Tool**: [Vite](https://vitejs.dev/)
-- **UI System**: [Contentful Forma 36](https://f36.contentful.com/)
-- **State Management**: React Hooks & Contentful App SDK
-- **Testing**: [Vitest](https://vitest.dev/) & [React Testing Library](https://testing-library.com/)
+A polished, production-ready Contentful App that adds a configurable "Repeater" field to your content model. The Repeater enables editors to create, edit, reorder, and persist lists of key/value items inside the Contentful entry editor with a native look and accessibility aligned with Contentful's design system.
 
 ---
 
-## 📦 Installation & Setup
+## Features
 
-### Prerequisites
+- Dynamic key/value list management: add, edit, delete, and reorder items.
+- Native UI: built with @contentful/f36-components to match Contentful's editor.
+- Automatic resizing: the app adjusts its iframe height to fit content for a seamless editing experience.
+- Configurable labels: update the "Value" label via the `valueName` instance parameter (e.g., "URL", "Description").
+- Robust state handling and validation to maintain data integrity.
+- Structured, levelled logging to aid debugging and observability.
 
-- Node.js (v18 or later)
-- A Contentful account and Space
-- Contentful CLI installed (`npm install -g contentful-cli`)
+## Tech stack
 
-### 1. Clone the Repository
+- Framework: React + TypeScript
+- Build tool: Vite
+- UI system: Contentful Forma 36 (F36)
+- State management: React hooks + Contentful App SDK
+- Testing: Vitest + React Testing Library
+
+---
+
+## Installation & setup
+
+Prerequisites
+
+- Node.js v18 or later
+- A Contentful account and a Space
+- Contentful CLI (optional for uploads): `npm install -g contentful-cli`
+
+1. Clone the repository
 
 ```bash
 git clone https://github.com/your-username/app-contentful-repeater-v1.git
 cd app-contentful-repeater-v1
 ```
 
-### 2. Install Dependencies
+2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Run Locally
+3. Run locally
 
 Start the development server:
 
@@ -60,48 +61,30 @@ Start the development server:
 npm start
 ```
 
-The app will be available at `http://localhost:3000`.
-
-> **Note**: Because Contentful Apps run inside an iframe within the Contentful web app, opening `http://localhost:3000` directly in your browser will show a warning message. This is expected behavior.
+The app is intended to be embedded in Contentful's entry editor (iframe). Opening the dev URL directly may display a localhost warning; this is expected for standalone browsing.
 
 ---
 
-## 🔌 Contentful Configuration
+## Contentful configuration
 
-To use this app in Contentful, you need to create an App Definition and then install it into your space.
+To use the app inside Contentful, create an App Definition and install it into your space.
 
-### Step 1: Create App Definition
+1. Create an App Definition in Contentful (Organization Settings → Apps → Create App).
+2. Set the App URL to your dev or production URL (for local testing use `http://localhost:3000`).
+3. Register the Location: enable the Entry Field location and select JSON Object as the field type.
+4. (Optional) Add an instance parameter to customize the value label:
+   - ID: `valueName`
+   - Name: Value Field Label
+   - Type: Text
+   - Default: Value
 
-1. Log in to Contentful.
-2. Go to **Organization Settings** > **Apps** > **Create App**.
-3. Give it a name (e.g., "Repeater Field").
-4. In **App URL**, enter `http://localhost:3000` (for development) or your hosted URL (for production).
-5. Under **Locations**, check **Entry Field** and select **JSON Object**.
-6. (Optional) Add an **Instance Parameter**:
-   - **ID**: `valueName`
-   - **Name**: Value Field Label
-   - **Type**: Text
-   - **Default**: Value
-   - **Description**: "Custom label for the value input field."
-
-### Step 2: Install App
-
-1. Click **Install** in the top right corner of your App Definition.
-2. Select the space and environment where you want to use it.
-
-### Step 3: Add to Content Model
-
-1. Go to your **Content Model**.
-2. Add a new **JSON Object** field.
-3. In the **Appearance** tab, select your **Repeater Field App**.
+Install the app and add it to a JSON Object field in your content model via the Appearance tab.
 
 ---
 
-## 🧪 Development
+## Development
 
-### Running Tests
-
-We use Vitest for unit testing. The test suite covers rendering, interactions, and SDK integration.
+### Running tests
 
 ```bash
 # Run tests once
@@ -111,59 +94,52 @@ npm test
 npm run test:watch
 ```
 
-### Project Structure
+### Project structure
 
 ```
 src/
 ├── components/       # Shared UI components (e.g., LocalhostWarning)
-├── locations/        # Main App locations (e.g., Field entry point)
-│   ├── Field.tsx     # The core Repeater Field logic
-│   └── Field.test.tsx # Unit tests for the Field component
-├── utils/            # Helper functions (e.g., logger)
-├── App.tsx           # Main router for Contentful locations
-└── index.tsx         # Application entry point
+├── locations/        # Main app locations (Field entry point)
+│   ├── Field.tsx     # Core Repeater Field logic
+│   └── Field.test.tsx# Unit tests for the Field component
+├── utils/            # Helper functions and logging
+├── App.tsx           # Router for Contentful locations
+└── index.tsx         # Application bootstrap
 ```
 
 ---
 
-## 🚢 Deployment
+## Deployment
 
-To deploy this app to production, you can host the static build on Vercel, Netlify, or AWS S3.
+- Build the project:
 
-1. Build the project:
-   ```bash
-   npm run build
-   ```
-   This generates a `dist` folder.
+```bash
+npm run build
+```
 
-2. Upload the `dist` folder to your hosting provider.
+- The build output is placed in `dist/`. Host the static files on a platform of your choice (Vercel, Netlify, S3, etc.) and update the App Definition URL to point to the production URL.
 
-3. Update your **Contentful App Definition** to point to the new production URL instead of `localhost`.
+- Alternatively, use the included Contentful app scripts to upload the bundle:
 
-Alternatively, use the Contentful app scripts to upload the bundle:
 ```bash
 npm run contentful:upload
 ```
 
 ---
 
-## 📚 Documentation
+## Documentation & contributing
 
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** — Branch naming, commit style, and how to open a Pull Request.
-- **[CHANGELOG.md](CHANGELOG.md)** — Version history and notable changes.
-- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — High-level design and technical decisions.
-- **API docs** — JSDoc/TSDoc in source provide editor hints. Generate static API docs with `npm run docs:api` (output in `docs/api/`).
+- See `CONTRIBUTING.md` for contribution guidelines.
+- See `CHANGELOG.md` for release notes.
+- Architecture notes: `docs/ARCHITECTURE.md`.
+- Generate API docs with `npm run docs:api` (output -> `docs/api/`).
 
 ---
 
-## 🤝 Contributing
+## Author
 
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for branch naming, commit style, and PR steps before submitting a Pull Request.
+Prem Pratick Kumar
 
-## 👤 Author
+## License
 
-**Prem Pratick Kumar**
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License — see the `LICENSE` file for details.
