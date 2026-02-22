@@ -9,18 +9,19 @@
 <!-- Featured screenshot -->
 ![Repeater UI](./Repeater_v2.JPG)
 
-A polished, production-ready Contentful App that adds a configurable "Repeater" field to your content model. The Repeater enables editors to create, edit, reorder, and persist lists of key/value items inside the Contentful entry editor with a native look and accessibility aligned with Contentful's design system.
+A polished Contentful App that adds a configurable "Repeater" field to your content model. Editors can create, edit, delete and reorder key/value items directly inside the Contentful entry editor. Reordering is implemented via Forma 36's DragHandle for a native, accessible drag-and-drop experience.
 
 ---
 
 ## Features
 
-- Dynamic key/value list management: add, edit, delete, and reorder items.
-- Native UI: built with @contentful/f36-components to match Contentful's editor.
+- Dynamic key/value list management: add, edit, and delete items.
+- Drag-and-drop reordering: use the Forma 36 DragHandle to reorder rows; the field preserves stable item ids during moves.
+- Native UI: built with `@contentful/f36-components` to match the Contentful editor.
 - Automatic resizing: the app adjusts its iframe height to fit content for a seamless editing experience.
 - Configurable labels: update the "Value" label via the `valueName` instance parameter (e.g., "URL", "Description").
 - Robust state handling and validation to maintain data integrity.
-- Structured, levelled logging to aid debugging and observability.
+- Structured logging for easier debugging and observability.
 
 ## Tech stack
 
@@ -32,18 +33,18 @@ A polished, production-ready Contentful App that adds a configurable "Repeater" 
 
 ---
 
-## Installation & setup
+## Installation and Setup
 
-Prerequisites
+### Prerequisites
 
-- Node.js v18 or later
+- Node.js (matching package.json engine, e.g., >=24)
 - A Contentful account and a Space
 - Contentful CLI (optional for uploads): `npm install -g contentful-cli`
 
 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/app-contentful-repeater-v1.git
+git clone https://github.com/pratp2/app-contentful-repeater-v1.git
 cd app-contentful-repeater-v1
 ```
 
@@ -65,24 +66,43 @@ The app is intended to be embedded in Contentful's entry editor (iframe). Openin
 
 ---
 
-## Contentful configuration
+## Contentful Configuration
 
 To use the app inside Contentful, create an App Definition and install it into your space.
 
 1. Create an App Definition in Contentful (Organization Settings → Apps → Create App).
-2. Set the App URL to your dev or production URL (for local testing use `http://localhost:3000`).
+2. Set the App URL to your dev or production URL (for local testing, use `http://localhost:3000`).
 3. Register the Location: enable the Entry Field location and select JSON Object as the field type.
 4. (Optional) Add an instance parameter to customize the value label:
-   - ID: `valueName`
-   - Name: Value Field Label
-   - Type: Text
-   - Default: Value
+   - **ID:** `valueName`
+   - **Name:** Value Field Label
+   - **Type:** Text
+   - **Default:** Value
 
 Install the app and add it to a JSON Object field in your content model via the Appearance tab.
 
 ---
 
 ## Development
+
+### Useful developer commands
+
+```bash
+# Install
+npm install
+
+# Typecheck
+npm run typecheck
+
+# Format (prettier)
+npm run format
+
+# Lint (eslint + prettier)
+npm run lint
+
+# Run tests
+npm test
+```
 
 ### Running tests
 
@@ -127,12 +147,12 @@ npm run contentful:upload
 
 ---
 
-## Documentation & contributing
+## Documentation and Contributing
 
-- See `CONTRIBUTING.md` for contribution guidelines.
-- See `CHANGELOG.md` for release notes.
-- Architecture notes: `docs/ARCHITECTURE.md`.
-- Generate API docs with `npm run docs:api` (output -> `docs/api/`).
+- See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
+- See [CHANGELOG.md](CHANGELOG.md) for release notes.
+- See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for architecture notes.
+- Generate API documentation with `npm run docs:api` (output → `docs/api/`).
 
 ---
 

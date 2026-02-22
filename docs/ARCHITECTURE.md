@@ -51,6 +51,6 @@ This project implements a Contentful App that mounts in the Entry Field location
 
 ## Future considerations
 
-- Reordering: add drag-and-drop or move up/down controls using stable `id` values.
+- Reordering: implemented — drag-and-drop with a Forma 36 `DragHandle` now permits stable, accessible reordering using each item's `id` to preserve identity during moves; Move up/down buttons were removed in favor of a single handle-based interaction.
 - Validation: support configurable rules (required keys, min/max lengths) before persisting values.
 - Additional locations: expose the same UI in other Contentful locations (sidebar, entry editor contextual views).

@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FieldAppSDK } from "@contentful/app-sdk";
 import {
   Button,
+  DragHandle,
   Flex,
   Table,
   TableBody,
@@ -114,11 +115,21 @@ const styles = {
     minWidth: "120px",
     whiteSpace: "nowrap",
   }),
+  /* Slight spacing for the drag handle */
+  dragHandleSpacing: css({
+    marginRight: tokens.spacingS,
+    display: "inline-flex",
+    verticalAlign: "middle",
+  }),
   /* Explicit spacer so Delete button never touches Value column */
   spacerBeforeDelete: css({
     width: tokens.spacingXl,
     minWidth: tokens.spacingXl,
     flexShrink: 0,
+  }),
+  /* Drag state highlight for the target row */
+  dragOverRow: css({
+    backgroundColor: tokens.colorElementLightest,
   }),
   input: css({
     width: "100%",
@@ -148,6 +159,7 @@ const Field: React.FC<FieldProps> = ({ sdk }) => {
   const { valueName = "Value" } = sdk.parameters.instance as InstanceParameters;
 
   const [items, setItems] = useState<Item[]>([]);
+  const dragIndexRef = useRef<number | null>(null);
 
   /* ---------------------------- Initialization ---------------------------- */
 
@@ -186,8 +198,6 @@ const Field: React.FC<FieldProps> = ({ sdk }) => {
 
   /**
    * Updates the local state and the Contentful field value.
-   *
-   * @param {Item[]} updatedItems - The new list of items to save.
    */
   const updateFieldValue = useCallback(
     (updatedItems: Item[]) => {
@@ -196,6 +206,90 @@ const Field: React.FC<FieldProps> = ({ sdk }) => {
     },
     [sdk.field],
   );
+
+  /* -------------------------- Drag-and-drop handlers ------------------------- */
+
+  const handleDragStart = useCallback(
+    (event: React.DragEvent, index: number) => {
+      dragIndexRef.current = index;
+      const id = items[index]?.id || "";
+      event.dataTransfer.setData("text/plain", id);
+      event.dataTransfer.effectAllowed = "move";
+    },
+    [items],
+  );
+
+  const handleDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  }, []);
+
+  const handleDrop = useCallback(
+    (event: React.DragEvent, targetIndex: number) => {
+      event.preventDefault();
+
+      // Decide whether the drop occurred on the top or bottom half of the row
+      const rowEl = event.currentTarget as HTMLElement;
+      const rect = rowEl.getBoundingClientRect();
+      const dropAfter = event.clientY > rect.top + rect.height / 2;
+
+      // desiredIndexOriginal is the intended index in the original array (before removal)
+      const desiredIndexOriginal = dropAfter ? targetIndex + 1 : targetIndex;
+
+      const draggedId = event.dataTransfer.getData("text/plain");
+      const fromIndex = items.findIndex((i) => i.id === draggedId);
+      if (fromIndex === -1) {
+        if (dragIndexRef.current == null) return;
+      }
+      const actualFrom =
+        fromIndex === -1 ? (dragIndexRef.current as number) : fromIndex;
+
+      // Build the array after removing the moved item
+      const withoutMoved = items.filter((_, i) => i !== actualFrom);
+
+      // Compute insertion index into the post-removal array
+      // If the source was before the desired position in the original array,
+      // the removal shifts indexes left by 1, so subtract 1.
+      let insertionIndex = desiredIndexOriginal;
+      if (actualFrom < desiredIndexOriginal) {
+        insertionIndex = desiredIndexOriginal - 1;
+      }
+
+      // Clamp insertionIndex to valid range
+      insertionIndex = Math.max(
+        0,
+        Math.min(insertionIndex, withoutMoved.length),
+      );
+
+      // No-op if position doesn't change
+      if (
+        insertionIndex === actualFrom ||
+        (actualFrom === insertionIndex && !dropAfter)
+      ) {
+        dragIndexRef.current = null;
+        return;
+      }
+
+      // Rebuild list with moved item inserted
+      const moved = items[actualFrom];
+      const updated = [
+        ...withoutMoved.slice(0, insertionIndex),
+        moved,
+        ...withoutMoved.slice(insertionIndex),
+      ];
+
+      logInfo("Item dropped", { from: actualFrom, to: insertionIndex });
+      updateFieldValue(updated);
+      dragIndexRef.current = null;
+    },
+    [items, updateFieldValue],
+  );
+
+  const handleDragEnd = useCallback(() => {
+    dragIndexRef.current = null;
+  }, []);
+
+  /* ----------------------------- Action Handlers ---------------------------- */
 
   /**
    * Adds a new empty item to the repeater list.
@@ -257,7 +351,16 @@ const Field: React.FC<FieldProps> = ({ sdk }) => {
         </TableHead>
         <TableBody>
           {items.map((item, index) => (
-            <TableRow key={item.id}>
+            <TableRow
+              key={item.id}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, index)}
+              className={
+                dragIndexRef.current !== null && dragIndexRef.current !== index
+                  ? styles.dragOverRow
+                  : undefined
+              }
+            >
               <TableCell>
                 <div
                   className={`${styles.cellWrapper} ${styles.cellWrapperItemName}`}
@@ -290,7 +393,22 @@ const Field: React.FC<FieldProps> = ({ sdk }) => {
                 <div
                   className={`${styles.cellWrapper} ${styles.cellWrapperActions}`}
                 >
-                  <Flex justifyContent="flex-end" gap="spacingM">
+                  <Flex
+                    justifyContent="flex-end"
+                    gap="spacingM"
+                    alignItems="center"
+                  >
+                    {/* Drag handle (Forma 36) - only this element initiates the drag */}
+                    <span className={styles.dragHandleSpacing}>
+                      <DragHandle
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, index)}
+                        onDragEnd={handleDragEnd}
+                        label={`Drag to reorder, row ${index + 1}`}
+                        title="Drag to reorder"
+                      />
+                    </span>
+
                     <span
                       className={styles.spacerBeforeDelete}
                       aria-hidden="true"
