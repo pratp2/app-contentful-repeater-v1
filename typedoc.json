@@ -1,0 +1,11 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.tsx", "src/App.tsx", "src/locations/Field.tsx", "src/utils/logger.ts", "src/components/LocalhostWarning.tsx"],
+  "out": "docs/api",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "readme": "none",
+  "plugin": [],
+  "includeVersion": true
+}

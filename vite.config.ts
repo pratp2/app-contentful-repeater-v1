@@ -1,6 +1,12 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
+/**
+ * Vite configuration for the React application.
+ * Configures the development server, plugins (React), and testing environment (Vitest).
+ * 
+ * @see https://vitejs.dev/config/
+ */
 export default defineConfig(() => ({
   base: '', // relative paths
   server: {
@@ -9,5 +15,12 @@ export default defineConfig(() => ({
   plugins: [react()],
   test: {
     environment: 'happy-dom',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: ['src/**/*.test.{ts,tsx}', 'src/vite-env.d.ts'],
+      reportsDirectory: './coverage',
+    },
   },
 }));
