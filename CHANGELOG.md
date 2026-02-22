@@ -11,11 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Documentation: CONTRIBUTING.md, SECURITY.md, CHANGELOG.md, docs/ARCHITECTURE.md.
 - API docs: `npm run docs:api` to generate TypeDoc output in `docs/api/`.
+- Reordering: Drag-and-drop reordering using Forma 36's DragHandle; stable id-based ordering preserved.
 
 ### Changed
 
 - README: badges updated to React 19, Vite 7; upload command corrected to `npm run contentful:upload`.
 - LICENSE: copyright holder aligned with package.json author.
+- Field component: removed arrow move buttons in favor of DragHandle-only reordering; improved drop positioning logic and accessibility.
+- Code style: applied Prettier formatting and ESLint rules across modified files.
 
 ---
 
@@ -29,5 +32,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Forma 36 UI, WCAG-oriented layout and ARIA.
 - Structured logging (Pino), Vitest tests, ESLint + Prettier.
 
-[Unreleased]: https://github.com/your-username/app-contentful-repeater-v1/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/your-username/app-contentful-repeater-v1/releases/tag/v0.1.0
+[Unreleased]: https://github.com/pratp2/app-contentful-repeater-v1/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/pratp2/app-contentful-repeater-v1/releases/tag/v0.1.0
