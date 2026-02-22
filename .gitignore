@@ -131,3 +131,21 @@ docs/api
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows thumbnails and desktop metadata
+Thumbs.db
+desktop.ini
+
+# Editor history and local caches
+.history/
+.sass-cache/
